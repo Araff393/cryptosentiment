@@ -1,5 +1,41 @@
-# Ignore environment and secret files
-.env
-*.env
+# ============================
+# PYTHON
+# ============================
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+env/
+crypto_env/
+*.egg-info/
+
+# ============================
+# OS FILES
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# SECRET FILES
+# ============================
+.env
+*.env
+
+# Jangan commit environment lokal
+.crypto/
+
+# ============================
+# IDE / EDITOR FILES
+# ============================
+.vscode/
+.idea/
+
+# ============================
+# BUILD ARTIFACTS
+# ============================
+dist/
+build/

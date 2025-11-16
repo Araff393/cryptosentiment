@@ -2,3 +2,6 @@ Flask
 requests
 python-dotenv
 flask-cors
+gunicorn
+pytz
+huggingface_hub
