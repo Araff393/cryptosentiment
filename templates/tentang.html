@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang - CryptoSentiment</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 w-full z-50 glass-card">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-chart-line text-white text-lg"></i>
+            </div>
+            <h1 class="hero-text text-2xl font-bold">CryptoSentiment</h1>
+        </div>
+
+        <div class="hidden md:flex space-x-8">
+            <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('analisis') }}" class="nav-link">Analisis Detail</a>
+            <a href="{{ url_for('tentang') }}" class="nav-link text-blue-500 font-semibold">Tentang</a>
+        </div>
+
+        <button id="theme-toggle" class="text-xl">
+            <i id="theme-icon" class="fas fa-moon"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<section class="pt-28 pb-10 px-6 text-center">
+    <h1 class="hero-text text-5xl font-bold mb-4">Tentang CryptoSentiment</h1>
+    <p class="text-xl max-w-3xl mx-auto opacity-80">
+        Platform analisis sentimen dan harga cryptocurrency yang menggabungkan data real-time,
+        Natural Language Processing (NLP), dan visualisasi interaktif.
+    </p>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- Card 1 -->
+        <div class="glass-card p-8 rounded-2xl">
+            <h2 class="hero-text text-3xl font-bold mb-4">Apa itu CryptoSentiment?</h2>
+            <p class="opacity-90 leading-relaxed">
+                CryptoSentiment adalah aplikasi web yang memantau pergerakan harga kripto secara real-time
+                dan menganalisis sentimen berita menggunakan AI. Aplikasi ini memberikan insight cepat dan akurat
+                untuk membantu pengguna memahami mood pasar hanya dalam beberapa detik.
+            </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-card p-8 rounded-2xl">
+            <h2 class="hero-text text-3xl font-bold mb-4">Teknologi yang Digunakan</h2>
+            <ul class="list-disc pl-6 space-y-2 opacity-90">
+                <li><b>Flask Web Framework</b> — Backend & Routing</li>
+                <li><b>CoinGecko API</b> — Data harga crypto real-time</li>
+                <li><b>NewsData.io API</b> — Berita crypto global</li>
+                <li><b>FinBERT</b> — Model AI untuk analisis sentimen yang lebih akurat</li>
+                <li><b>Plotly</b> — Visualisasi chart interaktif</li>
+                <li><b>TailwindCSS</b> — UI modern dan responsive</li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+
+<!-- FINBERT SECTION -->
+<section class="px-6 py-16 bg-gray-50 dark:bg-[#101420]">
+    <div class="max-w-6xl mx-auto">
+
+        <h2 class="hero-text text-4xl font-bold text-center mb-10">Analisis Sentimen dengan FinBERT</h2>
+
+        <div class="glass-card p-8 rounded-2xl">
+
+            <p class="leading-relaxed opacity-90 mb-6">
+                FinBERT adalah model NLP berbasis BERT yang di-training khusus untuk menganalisis teks keuangan.
+                Dibandingkan TextBlob atau model umum, FinBERT jauh lebih presisi dalam memahami konteks berita
+                finansial seperti regulasi, laporan ekonomi, dan pergerakan pasar.
+            </p>
+
+            <h3 class="text-2xl font-semibold mb-4">Bagaimana CryptoSentiment Menggunakan FinBERT?</h3>
+
+            <ul class="list-decimal pl-6 space-y-2 opacity-90">
+                <li>Mengambil berita terbaru dari NewsData.io</li>
+                <li>Mengirim judul berita ke API FinBERT</li>
+                <li>FinBERT mengembalikan label: <b>Positive, Negative, atau Neutral</b></li>
+                <li>Skor probabilitas disimpan & divisualisasikan dalam dashboard</li>
+            </ul>
+
+            <p class="mt-6 opacity-90">
+                Dengan menggunakan FinBERT, aplikasi mampu menyajikan profil sentimen pasar
+                yang lebih akurat dan profesional.
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="px-6 py-16">
+    <div class="max-w-5xl mx-auto text-center">
+
+        <h2 class="hero-text text-4xl font-bold mb-6">Hubungi Pengembang</h2>
+
+        <p class="opacity-80 max-w-2xl mx-auto mb-6">
+            Tertarik untuk bekerja sama, memberikan feedback, atau berdiskusi tentang teknologi AI?
+            Silakan hubungi saya kapan saja.
+        </p>
+
+        <div class="flex justify-center gap-6 text-xl">
+            <a href="#" class="hover:text-blue-500"><i class="fab fa-github"></i></a>
+            <a href="#" class="hover:text-blue-500"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="hover:text-blue-500"><i class="fas fa-envelope"></i></a>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 bg-gray-900 text-white text-center">
+    <p class="opacity-80">© 2025 CryptoSentiment — Dibuat dengan Flask + AI</p>
+</footer>
+
+<!-- THEME SWITCHER -->
+<script>
+const body = document.body;
+const icon = document.getElementById("theme-icon");
+const saved = localStorage.getItem("theme");
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+applyTheme(saved || (prefersDark ? "dark" : "light"));
+
+function applyTheme(theme){
+    if(theme === "dark"){
+        body.classList.add("dark");
+        icon.classList.replace("fa-sun","fa-moon");
+    } else {
+        body.classList.remove("dark");
+        icon.classList.replace("fa-moon","fa-sun");
+    }
+    localStorage.setItem("theme", theme);
+}
+
+document.getElementById("theme-toggle").onclick = ()=>{
+    applyTheme(body.classList.contains("dark") ? "light" : "dark");
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+User → Website  
+Website → Flask Backend  
+Backend → CoinGecko API → Harga & Chart  
+Backend → NewsData API → Berita  
+Backend → HuggingFace API → Sentiment  
+Flask → Menggabungkan semua data → Frontend  
+Frontend → Menampilkan harga, berita, chart, dan AI analysis

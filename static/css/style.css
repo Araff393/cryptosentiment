@@ -1,0 +1,326 @@
+/* ============================
+   style.css — Unified & Clean
+   ============================ */
+
+/* === VARIABLES / THEME === */
+:root{
+  --bg: #f8f6f0;
+  --text: #2d3436;
+  --card: rgba(248,246,240,0.92);
+  --chart-bg: #ffffff;
+
+  /* dark theme fallbacks */
+  --bg-dark: #0b0f19;
+  --text-dark: #d6d8e1;
+  --card-dark: rgba(20,25,36,0.85);
+  --chart-bg-dark: #0b0f19;
+}
+
+/* Body base (keamanan: Tailwind akan tetap berjalan) */
+body {
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* When .dark class added on body, use dark theme variables (keystone) */
+body:not(.dark){
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* ============================
+   GLOBAL COMPONENTS
+   ============================ */
+
+/* Glass card (used many places) */
+.glass-card{
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Override for light/dark variations */
+body.dark .glass-card{
+  background: rgba(20,25,36,0.85);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Hero font family helper */
+.hero-text{
+  font-family: 'Playfair Display', serif;
+}
+
+/* Small reusable insight card */
+.insight-card{
+  border-left: 4px solid #9ca986;
+  padding-left: 1rem;
+}
+
+/* Navigation link with underline animation */
+.nav-link{
+  position: relative;
+  transition: color .25s ease;
+  color: inherit;
+  text-decoration: none;
+}
+.nav-link::after{
+  content: "";
+  position: absolute;
+  left:0;
+  bottom:-6px;
+  width:0;
+  height:2px;
+  background:#9ca986;
+  transition: width .25s ease;
+}
+.nav-link:hover::after{ width:100%; }
+.nav-link:hover{ color:#9ca986; }
+
+/* Navbar (if using custom markup) */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background: transparent;
+  padding: .75rem 1.25rem;
+  gap:1rem;
+}
+
+/* Theme toggle icon sizing */
+#theme-toggle { background: transparent; border: none; cursor: pointer; }
+
+/* Button-like chart controls */
+.chart-btn{
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #1c2333;
+  color: #d4d9e3;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+.chart-btn:hover{ background:#2a3247; }
+
+/* pulse dot animation */
+.pulse-dot{ width:8px; height:8px; border-radius:9999px; display:inline-block; }
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1) }
+  50%{ opacity:0.4; transform:scale(0.8) }
+}
+.pulse-dot.animate{ animation: pulse 2s infinite; }
+
+/* Section entrance animation */
+.section-transition{ opacity:0; transform:translateY(40px); transition:all .7s ease-out; }
+.section-transition.visible{ opacity:1; transform:none; }
+
+/* Chart wrapper dark-compatible */
+.dark-chart-container{ background:var(--chart-bg-dark); border-radius:12px; padding:16px; }
+body:not(.dark) .dark-chart-container{ background:var(--chart-bg); }
+
+/* ============================
+   LAYOUT SPECIFIC (Prices / Cards / Hero)
+   ============================ */
+
+/* Price cards grid */
+.price-cards{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:1rem; }
+.card {
+  background: rgba(30,41,59,0.6);
+  border-radius: 12px;
+  padding: 20px;
+  width: 200px;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+  color: var(--text-dark);
+}
+body:not(.dark) .card{ background: rgba(248,246,240,0.9); color:var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+
+/* Price text */
+.price { font-size:1.25rem; font-weight:700; color:#10b981; }
+.delta { font-weight:700; }
+
+/* Positive / neutral / negative helpers (text & top border for news box) */
+.positive { color:#10b981; }
+.negative { color:#ef4444; }
+.neutral  { color:#facc15; }
+
+/* Sentiment boxes (overview) */
+.sentiment-box{
+  width:150px;
+  background: rgba(30,41,59,0.6);
+  border-radius:10px;
+  padding:18px;
+  color: #fff;
+  text-align:center;
+}
+body:not(.dark) .sentiment-box{ background: rgba(248,246,240,0.95); color:var(--text); }
+
+/* Give each sentiment box a top border color variant */
+.sentiment-box.positive{ border-top:4px solid #10b981; }
+.sentiment-box.neutral{ border-top:4px solid #facc15; }
+.sentiment-box.negative{ border-top:4px solid #ef4444; }
+
+/* Chart placeholder */
+.chart-placeholder{
+  background: rgba(30,41,59,0.6);
+  padding: 32px;
+  border-radius: 10px;
+  color:#94a3b8;
+  margin: 20px auto;
+  width: 80%;
+}
+body:not(.dark) .chart-placeholder{ background:#fff; color:#64748b; }
+
+/* ============================
+   NEWS / LIST ITEMS
+   ============================ */
+.news-grid{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+.news-item{
+  background: rgba(30,41,59,0.65);
+  border-radius:10px;
+  padding:18px;
+  width:280px;
+  text-align:left;
+  position:relative;
+  color:#cbd5e1;
+}
+body:not(.dark) .news-item{ background:#fff; color:#0b1220; box-shadow:0 6px 18px rgba(2,6,23,0.06); }
+
+.news-item h3{ color:#10b981; margin:0 0 .5rem 0; font-size:1rem; }
+.news-item p{ margin:0; color:inherit; font-size:.95rem; line-height:1.25; }
+
+/* small tag / sentiment badge */
+.tag{
+  position:absolute;
+  bottom:10px;
+  right:12px;
+  background:#10b981;
+  color:#fff;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:0.75rem;
+}
+.tag.negative{ background:#ef4444; }
+.tag.neutral{ background:#facc15; }
+
+/* ============================
+   FOOTER
+   ============================ */
+footer{
+  background: rgba(30,41,59,0.9);
+  padding:20px;
+  text-align:center;
+  color:#94a3b8;
+  margin-top:40px;
+}
+body:not(.dark) footer{ background:#f8f6f0; color:#64748b; }
+
+/* ============================
+   SMALL / UTIL CLASSES
+   ============================ */
+.hidden { display:none; }
+.text-right { text-align:right; }
+.center { text-align:center; }
+
+/* make images / charts responsive */
+img, canvas, svg { max-width:100%; height:auto; }
+
+/* ============================
+   PRICE CHANGE — Enhanced Effect
+   ============================ */
+
+.price-up {
+    color: #10ffb0 !important;      /* Bright green */
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(16, 255, 176, 0.65); /* Glow effect */
+    transition: all 0.3s ease;
+}
+
+.price-down {
+    color: #ff5f7a !important;       /* Bright red */
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(255, 95, 122, 0.55); /* Glow effect */
+    transition: all 0.3s ease;
+}
+
+/* Hover effect (optional) */
+.price-up:hover,
+.price-down:hover {
+    transform: scale(1.05);
+    text-shadow: 0 0 10px currentColor;
+}
+
+
+
+/* ============================
+   MOBILE ADJUSTMENTS
+   ============================ */
+@media (max-width:768px){
+  .price-cards{ gap:12px; }
+  .card{ width:calc(50% - 16px); }
+  .news-item{ width:100%; }
+  .hero { padding: 48px 16px; }
+}
+
+/* ============================
+   END OF FILE
+   ============================ */
+
+   /* ========================= */
+/* HERO ANIMATION */
+/* ========================= */
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1s ease-out forwards;
+}
+
+.fade-up-delay-1 {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1.2s ease-out forwards;
+}
+
+.fade-up-delay-2 {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1.4s ease-out forwards;
+}
+
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.coin-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: #222a3b;
+    color: #d4d9e3;
+    font-size: 14px;
+    border: 1px solid #2f3a52;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+.coin-btn:hover {
+    background: #33415c;
+    border-color: #4e5f82;
+}
+
+.coin-btn.active {
+    background: #3b82f6;
+    border-color: #60a5fa;
+    color: white;
+}

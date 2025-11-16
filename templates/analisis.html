@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analisis Detail - CryptoSentiment</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Unified Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Plotly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/3.0.3/plotly.min.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 w-full z-50 glass-card">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-chart-line text-white text-lg"></i>
+            </div>
+            <h1 class="hero-text text-2xl font-bold">CryptoSentiment</h1>
+        </div>
+
+        <div class="hidden md:flex space-x-8">
+            <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('analisis') }}" class="nav-link text-blue-600 font-bold">Analisis Detail</a>
+            <a href="{{ url_for('tentang') }}" class="nav-link">Tentang</a>
+        </div>
+
+        <button id="theme-toggle" class="text-xl">
+            <i id="theme-icon" class="fas fa-moon"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<section class="pt-24 pb-12 px-6">
+    <div class="max-w-7xl mx-auto text-center">
+        <h1 class="hero-text text-5xl font-bold mb-4">Analisis Detail</h1>
+        <p class="text-xl max-w-3xl mx-auto">
+            Deep dive analisis sentimen pasar dan kaitannya dengan pergerakan harga cryptocurrency
+        </p>
+    </div>
+</section>
+
+<!-- KEY METRICS -->
+<section class="py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="hero-text text-3xl font-bold mb-8">Metrik Utama</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <div class="glass-card p-6 text-center rounded-xl">
+                <div class="text-3xl font-bold text-blue-600" id="metric-correlation">0.00</div>
+                <div class="opacity-80">Korelasi Sentimen-Harga</div>
+            </div>
+
+            <div class="glass-card p-6 text-center rounded-xl">
+                <div class="text-3xl font-bold text-green-600" id="metric-positive">0%</div>
+                <div class="opacity-80">Sentimen Positif</div>
+            </div>
+
+            <div class="glass-card p-6 text-center rounded-xl">
+                <div class="text-3xl font-bold text-yellow-500" id="metric-neutral">0%</div>
+                <div class="opacity-80">Sentimen Netral</div>
+            </div>
+
+            <div class="glass-card p-6 text-center rounded-xl">
+                <div class="text-3xl font-bold text-red-500" id="metric-negative">0%</div>
+                <div class="opacity-80">Sentimen Negatif</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- SENTIMENT vs PRICE CHART -->
+<section class="px-6 py-20 max-w-7xl mx-auto">
+    <h2 class="hero-text text-3xl font-bold mb-6">Grafik Sentimen vs Harga (Real-Time)</h2>
+    <div id="sample-chart" class="glass-card p-4 rounded-xl" style="height:350px"></div>
+    <div id="sentiment-price-chart" class="glass-card p-4 rounded-xl" style="height:400px"></div>
+</section>
+
+
+<!-- SENTIMENT SECTION -->
+<section class="px-6 py-20 max-w-7xl mx-auto">
+    <h2 class="hero-text text-3xl font-bold mb-10">Analisis Sentimen Berita Terkini</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+        <!-- OVERVIEW -->
+        <div class="glass-card p-6 rounded-xl">
+            <h3 class="text-xl font-bold mb-4">Overview Sentimen</h3>
+
+            <div class="space-y-6 text-sm opacity-90">
+
+                <div class="flex justify-between">
+                    <span>Positif</span>
+                    <span id="pos-val">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 h-2 rounded">
+                    <div id="pos-bar" class="h-2 bg-green-500 rounded" style="width:0%"></div>
+                </div>
+
+                <div class="flex justify-between">
+                    <span>Netral</span>
+                    <span id="neu-val">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 h-2 rounded">
+                    <div id="neu-bar" class="h-2 bg-yellow-500 rounded" style="width:0%"></div>
+                </div>
+
+                <div class="flex justify-between">
+                    <span>Negatif</span>
+                    <span id="neg-val">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 h-2 rounded">
+                    <div id="neg-bar" class="h-2 bg-red-500 rounded" style="width:0%"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- NEWS LIST -->
+        <div class="lg:col-span-2 space-y-5" id="news-list">
+            <div class="text-center opacity-70">Memuat berita...</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 mt-20 bg-gray-900 text-white text-center">
+    <p class="opacity-80">© 2025 CryptoSentiment — Analisis Pasar Kripto</p>
+</footer>
+
+<!-- SAMPLE CHART -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    Plotly.newPlot("sample-chart", [{
+        x: ["A","B","C"],
+        y: [10,5,8],
+        type: "bar"
+    }]);
+});
+</script>
+
+<!-- SENTIMENT LOADER (FINBERT REAL DATA) -->
+<script>
+async function loadSentiment(){
+    const res = await fetch("/api/sentiment");
+    const data = await res.json();
+
+    // === Overview %
+    const pos = data.filter(n => n.sentiment === "positive").length;
+    const neu = data.filter(n => n.sentiment === "neutral").length;
+    const neg = data.filter(n => n.sentiment === "negative").length;
+
+    const total = data.length || 1;
+
+    document.getElementById("pos-val").innerText = Math.round(pos/total*100) + "%";
+    document.getElementById("neu-val").innerText = Math.round(neu/total*100) + "%";
+    document.getElementById("neg-val").innerText = Math.round(neg/total*100) + "%";
+
+    document.getElementById("pos-bar").style.width = (pos/total*100) + "%";
+    document.getElementById("neu-bar").style.width = (neu/total*100) + "%";
+    document.getElementById("neg-bar").style.width = (neg/total*100) + "%";
+
+    // === Metrik Utama
+    document.getElementById("metric-positive").innerText = Math.round(pos/total*100) + "%";
+    document.getElementById("metric-neutral").innerText = Math.round(neu/total*100) + "%";
+    document.getElementById("metric-negative").innerText = Math.round(neg/total*100) + "%";
+
+    // Korelasi sederhana
+    const avgConfidence = data.reduce((a,b)=> a + (b.confidence||0), 0) / total;
+    document.getElementById("metric-correlation").innerText = avgConfidence.toFixed(2);
+
+
+    // === NEWS LIST
+    const container = document.getElementById("news-list");
+    container.innerHTML = "";
+
+    data.forEach(n => {
+        let color =
+            n.sentiment === "positive" ? "green" :
+            n.sentiment === "negative" ? "red" :
+            "yellow";
+
+        container.innerHTML += `
+            <div class="glass-card p-5 rounded-xl">
+                <div class="text-sm text-${color}-400 font-semibold mb-1">
+                    ${n.sentiment.toUpperCase()} • ${n.confidence}
+                </div>
+
+                <div class="text-lg font-bold mb-3 leading-snug">${n.text}</div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-sm opacity-80 mt-3">
+                    <div><div class="font-semibold">Date</div><div>${n.date}</div></div>
+                    <div><div class="font-semibold">Country</div><div>${n.country || "-"}</div></div>
+                    <div><div class="font-semibold">Language</div><div>${n.language}</div></div>
+                    <div><div class="font-semibold">Category</div><div>${n.category}</div></div>
+                    <div><div class="font-semibold">Publisher</div><div>${n.publisher}</div></div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+loadSentiment();
+</script>
+
+<!-- THEME -->
+<script>
+const body = document.body;
+const icon = document.getElementById("theme-icon");
+
+function applyTheme(t){
+    if(t==="dark"){
+        body.classList.add("dark");
+        icon.classList.replace("fa-sun","fa-moon");
+    } else {
+        body.classList.remove("dark");
+        icon.classList.replace("fa-moon","fa-sun");
+    }
+    localStorage.setItem("theme", t);
+}
+
+applyTheme(localStorage.getItem("theme") || "light");
+
+document.getElementById("theme-toggle").onclick = ()=>{
+    applyTheme(body.classList.contains("dark") ? "light" : "dark");
+};
+</script>
+
+</body>
+</html>

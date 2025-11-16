@@ -1,0 +1,21 @@
+Cara Membaca Korelasi Sentimen vs Harga
+
+Sumbu X menunjukkan sentimen berita (semakin ke kanan = sentimen semakin positif).
+
+Sumbu Y menunjukkan perubahan harga (nilai di atas 0 = harga naik, nilai di bawah 0 = harga turun).
+
+Setiap titik merepresentasikan satu berita dan pengaruhnya terhadap pergerakan harga coin.
+
+Korelasi (nilai -1 sampai +1) menunjukkan seberapa kuat hubungan antara sentimen dan harga:
+
++1 → Sentimen positif sangat selaras dengan kenaikan harga
+
+0 → Sentimen tidak berpengaruh signifikan terhadap harga
+
+-1 → Sentimen negatif sangat selaras dengan penurunan harga
+
+Sentimen Terkini merangkum mayoritas sentimen dari berita terbaru (positif/netral/negatif).
+
+Tren Harga menunjukkan apakah harga coin sedang naik atau turun berdasarkan data pasar.
+
+Analisis ini membantu mengetahui apakah sentimen mendorong harga, atau harga bergerak karena faktor lain seperti pasar global, likuiditas, atau trader besar.

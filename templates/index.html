@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CryptoSentiment - Analisis Sentimen & Data Pasar Kripto</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Unified Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/3.0.3/plotly.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.birds.min.js"></script>
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 glass-card">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-white text-lg"></i>
+                </div>
+                <h1 class="hero-text text-2xl font-bold">CryptoSentiment</h1>
+            </div>
+
+            <div class="hidden md:flex space-x-8">
+                <a href="#dashboard" class="nav-link">Dashboard</a>
+                <a href="#prices" class="nav-link">Harga</a>
+                <a href="#sentiment" class="nav-link">Analisis</a>
+                <a href="#correlation" class="nav-link">Korelasi</a>
+                <a href="{{ url_for('analisis') }}" class="nav-link">Analisis Detail</a>
+                <a href="{{ url_for('tentang') }}" class="nav-link">Tentang</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="text-xl"><i id="theme-icon" class="fas fa-moon"></i></button>
+                <div class="pulse-dot animate bg-green-500 rounded-full"></div>
+                <span class="text-sm">Live</span>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="dashboard"
+        class="section-transition relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div id="vanta-bg" class="vanta-bg"></div>
+
+        <div class="text-center relative z-10 px-6 max-w-4xl mx-auto">
+            <h1 class="hero-text text-6xl md:text-8xl font-bold mb-6 fade-up">
+                Crypto<span class="text-blue-600">Sentiment</span> </h1>
+
+            <p class="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300 fade-up-delay-1">
+                Analisis sentimen berita & data pasar kripto real-time
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center fade-up-delay-2">
+                <button onclick="scrollToSection('prices')"
+                    class="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-chart-bar mr-2"></i>Lihat Harga Live
+                </button>
+
+                <button onclick="scrollToSection('sentiment')"
+                    class="px-8 py-4 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white">
+                    <i class="fas fa-brain mr-2"></i>Analisis Sentimen
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICE TRACKER -->
+    <section id="prices" class="section-transition py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="text-center mb-12">
+                <h2 class="hero-text text-4xl font-bold">Live Price Tracker</h2>
+                <p class="text-lg text-gray-600">Harga cryptocurrency utama</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+
+                <!-- ===== DYNAMIC PRICE CARDS ===== -->
+                <!-- Card structure preserved, IDs unchanged --->
+
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                                <i class="fab fa-bitcoin text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Bitcoin</h3>
+                                <p class="text-sm text-gray-500">BTC</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="btc-price" class="text-2xl font-bold">$0</div>
+                            <div id="btc-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="btc-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- ETH -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fab fa-ethereum text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Ethereum</h3>
+                                <p class="text-sm text-gray-500">ETH</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="eth-price" class="text-2xl font-bold">$0</div>
+                            <div id="eth-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="eth-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- USDT -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-xl">₮</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Tether</h3>
+                                <p class="text-sm text-gray-500">USDT</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="usdt-price" class="text-2xl font-bold">$0</div>
+                            <div id="usdt-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="usdt-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- SOL -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-sun text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Solana</h3>
+                                <p class="text-sm text-gray-500">SOL</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="sol-price" class="text-2xl font-bold">$0</div>
+                            <div id="sol-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="sol-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- XRP -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                                <span class="text-white text-xl font-bold">X</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">XRP</h3>
+                                <p class="text-sm text-gray-500">XRP</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="xrp-price" class="text-2xl font-bold">$0</div>
+                            <div id="xrp-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="xrp-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- BNB -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
+                                <i class="fas fa-cubes text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">BNB</h3>
+                                <p class="text-sm text-gray-500">BNB</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="bnb-price" class="text-2xl font-bold">$0</div>
+                            <div id="bnb-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="bnb-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- ADA (Cardano) -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-xl font-bold">A</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Cardano</h3>
+                                <p class="text-sm text-gray-500">ADA</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="ada-price" class="text-2xl font-bold">$0</div>
+                            <div id="ada-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="ada-volume">$0</span>
+                    </div>
+                </div>
+
+
+                <!-- DOGE -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-dog text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Dogecoin</h3>
+                                <p class="text-sm text-gray-500">DOGE</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="doge-price" class="text-2xl font-bold">$0</div>
+                            <div id="doge-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="doge-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- TRX -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-xl">T</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">TRON</h3>
+                                <p class="text-sm text-gray-500">TRX</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="trx-price" class="text-2xl font-bold">$0</div>
+                            <div id="trx-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="trx-volume">$0</span>
+                    </div>
+                </div>
+
+                <!-- HLP -->
+                <div class="crypto-card glass-card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-lg font-bold">H</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">HyperLiquid</h3>
+                                <p class="text-sm text-gray-500">HLP</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="hlp-price" class="text-2xl font-bold">$0</div>
+                            <div id="hlp-change" class="text-sm">0%</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Volume 24h</span>
+                        <span id="hlp-volume">$0</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PRICE CHART -->
+            <!-- COIN SELECTOR -->
+            <div class="flex flex-wrap gap-2 mb-4">
+
+                <button class="coin-btn" onclick="changeCoin('bitcoin')">BTC</button>
+                <button class="coin-btn" onclick="changeCoin('ethereum')">ETH</button>
+                <button class="coin-btn" onclick="changeCoin('tether')">USDT</button>
+                <button class="coin-btn" onclick="changeCoin('solana')">SOL</button>
+                <button class="coin-btn" onclick="changeCoin('ripple')">XRP</button>
+                <button class="coin-btn" onclick="changeCoin('binancecoin')">BNB</button>
+                <button class="coin-btn" onclick="changeCoin('cardano')">ADA</button>
+                <button class="coin-btn" onclick="changeCoin('dogecoin')">DOGE</button>
+                <button class="coin-btn" onclick="changeCoin('tron')">TRX</button>
+                <button class="coin-btn" onclick="changeCoin('hyperliquid')">HLP</button>
+
+            </div>
+
+            <!-- PERIOD SELECTOR -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button class="chart-btn" onclick="updateChartPeriod('1')">24H</button>
+                <button class="chart-btn" onclick="updateChartPeriod('7')">7D</button>
+                <button class="chart-btn" onclick="updateChartPeriod('30')">1M</button>
+                <button class="chart-btn" onclick="updateChartPeriod('90')">3M</button>
+                <button class="chart-btn" onclick="updateChartPeriod('365')">1Y</button>
+            </div>
+
+                <div id="price-chart" style="height:420px;"></div>
+
+            </div>
+
+        </div>
+    </section>
+
+<!-- SENTIMENT SECTION -->
+<section id="sentiment" class="py-16 px-6 bg-gray-50 dark:bg-[#0f131a]">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- TITLE -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-semibold">Analisis Sentimen</h2>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">
+                Ringkasan sentimen berita terkini
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- SENTIMENT OVERVIEW -->
+            <div class="glass-card p-6 rounded-xl">
+                <h3 class="text-lg font-semibold mb-5">Overview Sentimen</h3>
+
+                <div class="space-y-5">
+
+                    <!-- POSITIF -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm">Positif</span>
+                            <span id="positive-percent" class="text-sm font-medium">0%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-full">
+                            <div id="positive-bar"
+                                 class="h-full bg-green-500 rounded-full transition-all duration-500"
+                                 style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- NETRAL -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm">Netral</span>
+                            <span id="neutral-percent" class="text-sm font-medium">0%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-full">
+                            <div id="neutral-bar"
+                                 class="h-full bg-yellow-400 rounded-full transition-all duration-500"
+                                 style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- NEGATIF -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm">Negatif</span>
+                            <span id="negative-percent" class="text-sm font-medium">0%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-full">
+                            <div id="negative-bar"
+                                 class="h-full bg-red-500 rounded-full transition-all duration-500"
+                                 style="width:0%"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- AI ANALYSIS -->
+            <div class="lg:col-span-2">
+                <div id="ai-analysis"
+                     class="glass-card p-6 rounded-xl text-base leading-relaxed">
+                    <h3 class="text-lg font-semibold mb-3">Analisis Otomatis</h3>
+                    <p class="text-gray-700 dark:text-gray-300 opacity-90">
+                        Menunggu data...
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- BERITA TERKINI -->
+<section class="py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+
+        <h2 class="text-2xl font-bold mb-6 hero-text">Berita Terkini</h2>
+
+        <div class="glass-card rounded-xl p-6">
+
+            <!-- Scroll Area -->
+            <div id="news-container"
+                 class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                <div class="text-center opacity-60 py-4">Memuat berita...</div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+    <!-- CORRELATION SECTION -->
+    <section id="correlation" class="section-transition py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="text-center mb-12">
+                <h2 class="hero-text text-4xl font-bold">Korelasi Sentimen vs Harga</h2>
+            </div>
+
+            <div class="glass-card rounded-xl p-6 mb-8">
+                <div id="correlation-chart" style="height:450px;"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div id="correlation-score" class="text-3xl font-bold text-blue-600 mb-2">0.75</div>
+                    <div class="text-gray-600">Skor Korelasi</div>
+                </div>
+
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div id="trending-sentiment" class="text-3xl font-bold text-green-600 mb-2">Positif</div>
+                    <div class="text-gray-600">Sentimen Terkini</div>
+                </div>
+
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div id="price-trend" class="text-3xl font-bold text-orange-600 mb-2">Naik</div>
+                    <div class="text-gray-600">Tren Harga</div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 px-6 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="mb-2">CryptoSentiment</p>
+            <p class="text-sm text-gray-400">© 2025 CryptoSentiment — All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MAIN LOGIC JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- THEME SCRIPT -->
+    <script>
+        const body = document.body;
+        const themeIcon = document.getElementById("theme-icon");
+        const themeToggle = document.getElementById("theme-toggle");
+
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const saved = localStorage.getItem("theme");
+
+        applyTheme(saved || (prefersDark ? "dark" : "light"));
+
+        function applyTheme(theme) {
+            if (theme === "dark") {
+                body.classList.add("dark");
+                themeIcon.classList.replace("fa-sun", "fa-moon");
+            } else {
+                body.classList.remove("dark");
+                themeIcon.classList.replace("fa-moon", "fa-sun");
+            }
+            localStorage.setItem("theme", theme);
+
+            if (window.lastChartDays) {
+                fetchChart("bitcoin", window.lastChartDays);
+            }
+        }
+
+        themeToggle.onclick = () => {
+            applyTheme(body.classList.contains("dark") ? "light" : "dark");
+        };
+
+        const sections = document.querySelectorAll(".section-transition");
+        const observer = new IntersectionObserver((e) => {
+            e.forEach((entry) => {
+                if (entry.isIntersecting) entry.target.classList.add("visible");
+            });
+        }, { threshold: 0.2 });
+        sections.forEach((sec) => observer.observe(sec));
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+
+</body>
+</html>
