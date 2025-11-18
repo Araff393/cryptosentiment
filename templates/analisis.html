@@ -85,10 +85,21 @@
 </section>
 
 <!-- SENTIMENT vs PRICE CHART -->
-<section class="px-6 py-20 max-w-7xl mx-auto">
-    <h2 class="hero-text text-3xl font-bold mb-6">Grafik Sentimen vs Harga (Real-Time)</h2>
-    <div id="sample-chart" class="glass-card p-4 rounded-xl" style="height:350px"></div>
-    <div id="sentiment-price-chart" class="glass-card p-4 rounded-xl" style="height:400px"></div>
+<section class="px-6 py-20 max-w-7xl mx-auto space-y-12">
+
+    <!-- CHART 1: SENTIMEN vs HARGA (REAL-TIME) -->
+    <div>
+        <h2 class="hero-text text-3xl font-bold mb-6">Grafik Sentimen vs Harga (Real-Time)</h2>
+        <div id="sentiment-price-chart" class="glass-card p-4 rounded-xl" style="height:420px"></div>
+        <div id="sentiment-price-chart" class="glass-card p-4 rounded-xl" style="height:400px"></div>
+    </div>
+
+    <!-- CHART 2: TIMELINE SENTIMEN BERITA -->
+    <div>
+        <h2 class="hero-text text-3xl font-bold mb-6">Timeline Sentimen Berita</h2>
+        <div id="timeline-chart" class="glass-card p-4 rounded-xl" style="height:420px"></div>
+    </div>
+
 </section>
 
 
@@ -240,6 +251,133 @@ applyTheme(localStorage.getItem("theme") || "light");
 document.getElementById("theme-toggle").onclick = ()=>{
     applyTheme(body.classList.contains("dark") ? "light" : "dark");
 };
+</script>
+<script>
+async function loadSentimentTimeline(){
+    const res = await fetch("/api/sentiment");
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) return;
+
+    // ====== SCRIPTING LANGUAGE MATERIAL ======
+    // 1. Extract timestamp-like labels
+    const labels = data.map((item, i) => "Berita " + (i + 1));
+
+    // 2. Extract confidence scores
+    const scores = data.map(item => item.confidence);
+
+    // 3. Convert sentiment into numeric values for visualization
+    const sentimentValues = data.map(item => {
+        if (item.sentiment === "positive") return 1;
+        if (item.sentiment === "neutral") return 0;
+        return -1;
+    });
+
+    // 4. Color array based on sentiment
+    const colors = data.map(item => {
+        if (item.sentiment === "positive") return "green";
+        if (item.sentiment === "neutral") return "yellow";
+        return "red";
+    });
+
+    // ====== PLOTTING DATA ======
+    const traceScores = {
+        x: labels,
+        y: scores,
+        type: "scatter",
+        mode: "lines+markers",
+        line: { width: 3, color: "#3b82f6" },
+        marker: { size: 10, color: colors }
+    };
+
+    const traceSentiment = {
+        x: labels,
+        y: sentimentValues,
+        type: "bar",
+        opacity: 0.4,
+        marker: { color: colors },
+        name: "Sentiment (Pos=1 | Neu=0 | Neg=-1)"
+    };
+
+    Plotly.newPlot("timeline-chart", [traceScores, traceSentiment], {
+        title: "Timeline Sentimen Berita",
+        paper_bgcolor: "transparent",
+        plot_bgcolor: "transparent",
+        yaxis: { title: "Confidence / Sentiment", zeroline: true },
+        margin: { t: 50 }
+    });
+}
+
+loadSentimentTimeline();
+</script>
+
+<script>
+async function drawSentimentPriceChart(){
+    try {
+        const sentimentRes = await fetch("/api/sentiment");
+        const sentimentArr = await sentimentRes.json();
+
+        if (!Array.isArray(sentimentArr) || sentimentArr.length === 0) return;
+
+        const priceRes = await fetch("/api/prices");
+        const priceJson = await priceRes.json();
+
+        const found = priceJson.data?.find(c => c.id === "bitcoin") || priceJson.data[0];
+        const currentPrice = found.current_price;
+
+        const labels = sentimentArr.map((n, i) => "Berita " + (i + 1));
+        const sentimentScores = sentimentArr.map(n => n.confidence);
+
+        const priceLine = sentimentArr.map(() => currentPrice);
+
+        const traceSentiment = {
+            x: labels,
+            y: sentimentScores,
+            type: "bar",
+            name: "Confidence Score",
+            marker: { color: "#38bdf8" },
+            opacity: 0.75
+        };
+
+        const tracePrice = {
+            x: labels,
+            y: priceLine,
+            type: "scatter",
+            mode: "lines",
+            name: "Harga BTC",
+            yaxis: "y2",
+            line: { color: "#ff4b4b", width: 3 }
+        };
+
+        Plotly.newPlot("sentiment-price-chart", [traceSentiment, tracePrice], {
+            title: "Sentimen News vs Harga Bitcoin",
+            paper_bgcolor: "transparent",
+            plot_bgcolor: "transparent",
+
+            xaxis: {
+                tickangle: -45,
+                automargin: true
+            },
+            yaxis: {
+                title: "Sentiment Score (0–1)",
+                rangemode: "tozero"
+            },
+            yaxis2: {
+                title: "Harga Bitcoin (USD)",
+                overlaying: "y",
+                side: "right",
+                tickprefix: "$"
+            },
+
+            margin: { t: 50, b: 70, l: 50, r: 50 }
+        });
+
+    } catch (err) {
+        console.error("Error drawing sentiment-price-chart:", err);
+    }
+}
+
+drawSentimentPriceChart();
 </script>
 
 </body>
